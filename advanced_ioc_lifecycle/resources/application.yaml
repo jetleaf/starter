@@ -1,0 +1,8 @@
+server:
+  port: 8080
+
+jetleaf:
+  application:
+    name: "Advanced IoC & Lifecycle"
+  banner:
+    mode: "console"

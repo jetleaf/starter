@@ -1,0 +1,22 @@
+<h1>Documentation</h1>
+<p class="lede">Section: <strong>{{section}}</strong></p>
+<div class="docs-grid">
+  <aside>
+    <ul>
+      {{#each sections}}
+      <li><a href="/docs?section={{this.key}}">{{this.label}}</a></li>
+      {{/each}}
+    </ul>
+  </aside>
+  <article>
+    <h2>{{currentTitle}}</h2>
+    <p>{{currentBody}}</p>
+    {{#if currentHasCode}}
+    <pre><code>@Service()
+class InvoiceService {
+  @Scheduled(fixedRate: Duration(hours: 24))
+  Future&lt;void&gt; reconcile() async { /* nightly */ }
+}</code></pre>
+    {{/if}}
+  </article>
+</div>

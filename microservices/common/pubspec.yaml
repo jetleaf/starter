@@ -1,0 +1,13 @@
+name: microservices_common
+description: Shared primitives and the outbound service client used by the microservices reference services.
+version: 1.0.0
+publish_to: 'none'
+resolution: workspace
+
+environment:
+  sdk: ^3.9.0
+
+dependencies:
+  jetleaf: ^2.1.0
+  jetleaf_retry: ^2.1.0
+  jetleaf_web: ^2.1.0

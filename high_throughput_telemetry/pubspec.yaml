@@ -1,0 +1,42 @@
+name: high_throughput_telemetry
+description: High-frequency telemetry ingestion microservice — batched ingestion, rolling aggregates, chunked streaming summaries, live throughput. Built with Jetleaf.
+version: 1.0.0
+publish_to: 'none'
+
+environment:
+  sdk: ^3.9.0
+
+dependencies:
+  jetleaf: ^2.1.0
+  jetleaf_web: ^2.1.0
+  jetson: ^2.1.0
+  jetleaf_actuator: ^1.1.0
+  jetleaf_core: ^2.1.0
+
+dev_dependencies:
+  test: ^1.31.1
+  lints: ^6.1.0
+
+dependency_overrides:
+  jetleaf:
+    path: ../../jetleaf
+  jetleaf_core:
+    path: ../../jetleaf/libraries/jetleaf_core
+  jetleaf_tools:
+    path: ../../jetleaf/libraries/jetleaf_tools
+  jetleaf_web:
+    path: ../../jetleaf/packages/jetleaf_web
+  jetson:
+    path: ../../jetleaf/packages/jetson
+  jtl:
+    path: ../../jetleaf/packages/jtl
+  jetleaf_resource:
+    path: ../../jetleaf/packages/jetleaf_resource
+  jetleaf_validation:
+    path: ../../jetleaf/packages/jetleaf_validation
+  jetleaf_retry:
+    path: ../../jetleaf/packages/jetleaf_retry
+  jetleaf_scheduling:
+    path: ../../jetleaf/packages/jetleaf_scheduling
+  jetleaf_actuator:
+    path: ../../jetleaf/packages/jetleaf_actuator

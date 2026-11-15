@@ -1,0 +1,7 @@
+id,email,name,plan
+1, ada@example.com ,Ada Lovelace,pro
+2,BOB@EXAMPLE.COM,Bob the Builder,free
+3,,Charlie Missing,free
+4,not-an-email,Dana Invalid,enterprise
+5,ada@example.com,Ada Duplicate,pro
+6,GRACE@EXAMPLE.COM,Grace Hopper,enterprise

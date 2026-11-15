@@ -1,0 +1,17 @@
+<h1>Trending on SocialPulse</h1>
+<p class="meta">Ranked by engagement decay · generated at {{generatedAt}}</p>
+{{#if hasPosts}}
+  {{#each posts}}
+  <article class="card post">
+    <p><strong>@{{this.authorHandle}}</strong></p>
+    <p>{{this.content}}</p>
+    <div class="meta">
+      <span class="stat">♥ {{this.likes}}</span>
+      <span class="stat">💬 {{this.comments}}</span>
+      {{#if this.tags}}<span class="tag">{{this.tags}}</span>{{/if}}
+    </div>
+  </article>
+  {{/each}}
+{{else}}
+  <div class="card"><p>No posts yet. Be the first — <code>POST /api/users</code> then <code>POST /api/posts</code>.</p></div>
+{{/if}}

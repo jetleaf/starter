@@ -1,0 +1,8 @@
+server:
+  port: 8080
+
+jetleaf:
+  application:
+    name: "E-Commerce Catalog & Checkout API"
+  banner:
+    mode: "console"

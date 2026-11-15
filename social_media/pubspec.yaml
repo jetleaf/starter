@@ -1,0 +1,46 @@
+name: social_media
+description: "SocialPulse - a production-grade social media platform built entirely on Jetleaf 2.1. Exercises the full framework surface: IoC, AOP, validation, events, scheduling, retry, SSR (JTL), actuator, multipart, sessions and content negotiation."
+version: 1.0.0
+publish_to: 'none'
+
+environment:
+  sdk: ^3.9.0
+
+dependencies:
+  jetleaf: ^2.1.0
+  jetleaf_web: ^2.1.0
+  jetleaf_validation: ^2.1.0
+  jetleaf_retry: ^2.1.0
+  jetleaf_scheduling: ^2.1.0
+  jetleaf_actuator: ^1.1.0
+  jetleaf_resource: ^2.1.0
+  jetson: ^2.1.0
+  jtl: ^2.1.0
+
+dev_dependencies:
+  test: ^1.31.1
+  lints: ^6.1.0
+
+dependency_overrides:
+  jetleaf:
+    path: ../../jetleaf
+  jetleaf_core:
+    path: ../../jetleaf/libraries/jetleaf_core
+  jetleaf_tools:
+    path: ../../jetleaf/libraries/jetleaf_tools
+  jetleaf_web:
+    path: ../../jetleaf/packages/jetleaf_web
+  jetleaf_validation:
+    path: ../../jetleaf/packages/jetleaf_validation
+  jetleaf_retry:
+    path: ../../jetleaf/packages/jetleaf_retry
+  jetleaf_scheduling:
+    path: ../../jetleaf/packages/jetleaf_scheduling
+  jetleaf_actuator:
+    path: ../../jetleaf/packages/jetleaf_actuator
+  jetleaf_resource:
+    path: ../../jetleaf/packages/jetleaf_resource
+  jetson:
+    path: ../../jetleaf/packages/jetson
+  jtl:
+    path: ../../jetleaf/packages/jtl

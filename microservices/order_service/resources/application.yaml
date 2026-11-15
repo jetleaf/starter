@@ -1,0 +1,18 @@
+# Order service configuration.
+server:
+  port: 8082
+
+jetleaf:
+  application:
+    name: "Order Service"
+  banner:
+    mode: "console"
+
+services:
+  user:
+    base-url: "http://localhost:8081"
+    timeoutMs: 2000
+  notification:
+    base-url: "http://localhost:8083"
+    timeoutMs: 2000
+    enabled: true

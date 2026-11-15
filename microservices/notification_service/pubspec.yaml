@@ -1,0 +1,17 @@
+name: notification_service
+description: Notification inbox microservice (Jetleaf reference).
+version: 1.0.0
+publish_to: 'none'
+resolution: workspace
+
+environment:
+  sdk: ^3.9.0
+
+dependencies:
+  jetleaf: ^2.1.0
+  jetleaf_web: ^2.1.0
+  microservices_common: any
+
+dev_dependencies:
+  test: ^1.31.1
+  lints: ^6.1.0

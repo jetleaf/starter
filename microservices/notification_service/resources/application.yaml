@@ -1,0 +1,9 @@
+# Notification service configuration.
+server:
+  port: 8083
+
+jetleaf:
+  application:
+    name: "Notification Service"
+  banner:
+    mode: "console"

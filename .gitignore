@@ -1,0 +1,8 @@
+.dart_tool/
+.jetleaf/
+**/lib/_jetleaf/
+build/
+*.exe
+.packages
+pubspec.lock
+**/_jetleaf_test/

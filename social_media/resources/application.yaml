@@ -1,0 +1,36 @@
+# SocialPulse base configuration — shared by every profile.
+# Environment-specific files (application-dev.yaml, application-prod.yaml)
+# cascade on top of this file.
+server:
+  port: 8080
+
+jetleaf:
+  application:
+    name: "SocialPulse API"
+  banner:
+    mode: "console"
+
+# NOTE: Jetleaf binds @ConfigurationProperty fields by exact (camelCase) key,
+# not relaxed kebab-case, so these keys mirror the field names exactly.
+social:
+  feed:
+    pageSize: 20
+    maxPageSize: 100
+    trendingRefreshSeconds: 30
+  rate-limit:
+    requestsPerMinute: 600
+    adminRequestsPerMinute: 60
+  push:
+    enabled: true
+    batchSize: 100
+  media:
+    maxUploadBytes: 5242880
+    allowedTypes: "image/png,image/jpeg,image/gif,image/webp"
+  features:
+    ssrEnabled: true
+    actuatorExposed: true
+    pushEnabled: true
+  moderation:
+    autoSuspendThreshold: 5
+  admin:
+    key: "dev-admin-key"

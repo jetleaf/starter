@@ -1,0 +1,24 @@
+<div class="card">
+  <h1>@{{handle}}</h1>
+  <p><strong>{{displayName}}</strong> · joined {{joined}}</p>
+  <p>{{bio}}</p>
+  <div class="meta">
+    <span class="stat">{{followers}} followers</span>
+    <span class="stat">{{following}} following</span>
+    <span class="stat">{{posts}} posts</span>
+  </div>
+</div>
+<h2>Recent posts</h2>
+{{#if hasPosts}}
+  {{#each recentPosts}}
+  <article class="card post">
+    <p>{{this.content}}</p>
+    <div class="meta">
+      <span class="stat">♥ {{this.likes}}</span>
+      <span class="stat">💬 {{this.comments}}</span>
+    </div>
+  </article>
+  {{/each}}
+{{else}}
+  <div class="card"><p>No public posts yet.</p></div>
+{{/if}}

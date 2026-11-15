@@ -1,0 +1,8 @@
+server:
+  port: 8080
+
+jetleaf:
+  application:
+    name: "Event-Driven Order Hub"
+  banner:
+    mode: "console"

@@ -1,0 +1,19 @@
+# Production profile — no demo data. Supply real secrets via env injection;
+# 'prod' must never inherit dev-admin-key.
+server:
+  port: 8080
+
+jetleaf:
+  application:
+    name: "SocialPulse API"
+
+social:
+  features:
+    pushEnabled: false
+    ssrEnabled: true
+  push:
+    enabled: false
+  rate-limit:
+    requestsPerMinute: 300
+  admin:
+    key: "override-me-via-secret"

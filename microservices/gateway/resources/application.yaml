@@ -1,0 +1,24 @@
+# API gateway configuration.
+server:
+  port: 8080
+
+jetleaf:
+  application:
+    name: "API Gateway"
+  banner:
+    mode: "console"
+
+services:
+  gateway:
+    base-url: "http://localhost:8080"
+    timeoutMs: 3000
+  user:
+    base-url: "http://localhost:8081"
+    timeoutMs: 2000
+  order:
+    base-url: "http://localhost:8082"
+    timeoutMs: 2000
+  notification:
+    base-url: "http://localhost:8083"
+    timeoutMs: 2000
+    enabled: true

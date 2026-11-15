@@ -1,0 +1,18 @@
+<h1>Contact us</h1>
+<p class="lede">Tell us about your project and we'll get back to you within one business day.</p>
+{{#if hasErrors}}
+<div class="errors" role="alert">
+  <p>Please fix the following:</p>
+  <ul>
+    {{#each errors}}
+    <li>{{this}}</li>
+    {{/each}}
+  </ul>
+</div>
+{{/if}}
+<form method="post" action="/contact" class="portal-form">
+  <label>Name <input type="text" name="name" value="{{name}}" required minlength="2"></label>
+  <label>Email <input type="email" name="email" value="{{email}}" required></label>
+  <label>Message <textarea name="message" rows="5" required minlength="10">{{message}}</textarea></label>
+  <button type="submit" class="button">Send message</button>
+</form>

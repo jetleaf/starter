@@ -1,0 +1,14 @@
+server:
+  port: 8080
+
+jetleaf:
+  application:
+    name: "Acme SaaS Tenant API (staging)"
+
+app:
+  region: "us-east-1-staging"
+  rate-limit:
+    maxRequests: 300
+  features:
+    auditLog: true
+    betaDashboard: true

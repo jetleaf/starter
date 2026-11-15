@@ -1,0 +1,5 @@
+.dart_tool/
+.jetleaf/
+lib/_jetleaf/
+build/
+*.exe

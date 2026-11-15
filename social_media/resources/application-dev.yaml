@@ -1,0 +1,14 @@
+# Development profile — demo data seeded on boot.
+server:
+  port: 8080
+
+jetleaf:
+  application:
+    name: "SocialPulse API (dev)"
+
+social:
+  features:
+    pushEnabled: true
+    ssrEnabled: true
+  push:
+    enabled: true

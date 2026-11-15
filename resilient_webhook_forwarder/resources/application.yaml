@@ -1,0 +1,8 @@
+server:
+  port: 8080
+
+jetleaf:
+  application:
+    name: "Resilient Webhook Forwarder"
+  banner:
+    mode: "console"

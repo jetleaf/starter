@@ -1,0 +1,15 @@
+# Development profile — generous limits, beta features on, verbose behaviour.
+server:
+  port: 8081
+
+jetleaf:
+  application:
+    name: "Acme SaaS Tenant API (dev)"
+
+app:
+  region: "local"
+  rate-limit:
+    maxRequests: 100000
+  features:
+    auditLog: false
+    betaDashboard: true

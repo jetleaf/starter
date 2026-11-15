@@ -1,0 +1,16 @@
+<h1>{{heroTitle}}</h1>
+<p class="lede">{{heroSubtitle}}</p>
+<section>
+  <h2>Why teams pick this stack</h2>
+  <ul class="features">
+    {{#each features}}
+    <li>{{this}}</li>
+    {{/each}}
+  </ul>
+</section>
+<section class="cta">
+  <a class="button" href="/docs">Browse the docs →</a>
+  {{#if betaBanner}}
+  <p class="beta">Beta channel open — <a href="/contact">apply for early access</a>.</p>
+  {{/if}}
+</section>

@@ -1,0 +1,11 @@
+server:
+  port: 8080
+
+jetleaf:
+  application:
+    name: "Full-Stack Sync Backend"
+  banner:
+    mode: "console"
+  web:
+    cors:
+      enabled: true

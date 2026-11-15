@@ -1,0 +1,9 @@
+# User service configuration.
+server:
+  port: 8081
+
+jetleaf:
+  application:
+    name: "User Service"
+  banner:
+    mode: "console"

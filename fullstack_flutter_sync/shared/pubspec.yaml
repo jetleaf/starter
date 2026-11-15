@@ -1,0 +1,11 @@
+name: fullstack_sync_shared
+description: Shared DTOs and serialization contracts for the Flutter app and the Jetleaf API — one source of truth, zero serialization drift.
+version: 1.0.0
+publish_to: 'none'
+
+environment:
+  sdk: ^3.9.0
+
+dev_dependencies:
+  test: ^1.31.1
+  lints: ^6.1.0

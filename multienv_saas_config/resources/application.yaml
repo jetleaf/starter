@@ -1,0 +1,20 @@
+# Base configuration — shared by every profile. Environment-specific files
+# (application-dev.yaml, application-staging.yaml, application-prod.yaml)
+# cascade on top of this file.
+server:
+  port: 8080
+
+jetleaf:
+  application:
+    name: "Acme SaaS Tenant API"
+  banner:
+    mode: "console"
+
+app:
+  name: "Acme SaaS"
+  region: "us-east-1"
+  rate-limit:
+    maxRequests: 100
+  features:
+    auditLog: true
+    betaDashboard: false
