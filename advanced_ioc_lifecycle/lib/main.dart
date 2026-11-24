@@ -1,6 +1,6 @@
 import 'package:jetleaf/jetleaf.dart';
 
-import '_jetleaf/aot_registry.g.dart';
+import '_jetleaf/main.dart';
 
 @JetleafApplicationStarter()
 class AdvancedIocLifecycleApp {
@@ -8,5 +8,5 @@ class AdvancedIocLifecycleApp {
 }
 
 void main(List<String> args) async {
-  await JetleafApplication.run(AdvancedIocLifecycleApp(), args, null, registerJetleafAot);
+  await JetleafApplication.run(AdvancedIocLifecycleApp(), args, aotRegistrar: registerGeneratedArtifacts);
 }

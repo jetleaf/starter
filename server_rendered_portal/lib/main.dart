@@ -1,6 +1,6 @@
 import 'package:jetleaf/jetleaf.dart';
 
-import '_jetleaf/aot_registry.g.dart';
+import '_jetleaf/main.dart';
 
 @JetleafApplicationStarter()
 class ServerRenderedPortalApp {
@@ -8,5 +8,5 @@ class ServerRenderedPortalApp {
 }
 
 void main(List<String> args) async {
-  await JetleafApplication.run(ServerRenderedPortalApp(), args, null, registerJetleafAot);
+  await JetleafApplication.run(ServerRenderedPortalApp(), args, aotRegistrar: registerGeneratedArtifacts);
 }

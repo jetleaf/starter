@@ -1,7 +1,7 @@
 import 'package:jetleaf/jetleaf.dart';
 import 'package:jetleaf_scheduling/jetleaf_scheduling.dart';
 
-import '_jetleaf/aot_registry.g.dart';
+import '_jetleaf/main.dart';
 
 /// SocialPulse — Jetleaf application starter.
 ///
@@ -15,5 +15,5 @@ class SocialPulseApp {
 
 /// Boot the HTTP server (default).
 void main(List<String> args) async {
-  await JetleafApplication.run(SocialPulseApp(), args, null, registerJetleafAot);
+  await JetleafApplication.run(SocialPulseApp(), args, aotRegistrar: registerGeneratedArtifacts);
 }

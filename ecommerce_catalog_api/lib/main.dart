@@ -1,6 +1,6 @@
 import 'package:jetleaf/jetleaf.dart';
 
-import '_jetleaf/aot_registry.g.dart';
+import '_jetleaf/main.dart';
 
 /// E-Commerce Catalog & Checkout REST Application Starter.
 @JetleafApplicationStarter()
@@ -10,5 +10,5 @@ class EcommerceCatalogApp {
 
 /// Main entrypoint. Boots Jetleaf application context and Web server.
 void main(List<String> args) async {
-  await JetleafApplication.run(EcommerceCatalogApp(), args, null, registerJetleafAot);
+  await JetleafApplication.run(EcommerceCatalogApp(), args, aotRegistrar: registerGeneratedArtifacts);
 }

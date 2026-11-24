@@ -14,7 +14,7 @@ class PortalData {
     },
     'pods': {
       'title': 'Pods & Dependency Injection',
-      'body': 'Jetleaf pods are the container-managed beans. Use @Service/@Repository/@Pod with constructor injection; @Primary and @Qualifier disambiguate; @Lazy defers expensive construction.',
+      'body': 'Jetleaf pods are the container-managed pods. Use @Service/@Repository/@Pod with constructor injection; @Primary and @Qualifier disambiguate; @Lazy defers expensive construction.',
       'hasCode': false,
     },
     'scheduling': {

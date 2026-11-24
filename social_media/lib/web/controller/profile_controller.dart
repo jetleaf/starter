@@ -7,7 +7,7 @@ import '../../service/post_service.dart';
 import '../../service/user_service.dart';
 import '../../exception/social_pulse_exception.dart';
 import '../../util/page.dart';
-import '../../web/dto/bean_validator.dart';
+import '../dto/pod_validator.dart';
 import '../../web/dto/requests.dart';
 
 @RestController('/api/users')
@@ -16,7 +16,7 @@ class ProfileController {
 
   final UserService _users;
   final PostService _posts;
-  final BeanValidator _validator;
+  final PodValidator _validator;
 
   /// Register — public endpoint.
   @PostMapping()

@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:jetleaf/jetleaf.dart';
 import 'package:jetleaf_scheduling/jetleaf_scheduling.dart';
 
-import '_jetleaf/aot_registry.g.dart';
+import '_jetleaf/main.dart';
 import 'src/runners/etl_command_runner.dart';
 
 @EnableScheduling()
@@ -15,7 +15,7 @@ class BatchEtlCronCliApp {
 Future<int> main(List<String> args) async {
   final app = JetleafApplication(BatchEtlCronCliApp);
   app.setApplicationType(ApplicationType.NONE);
-  app.setAotRegistrar(registerGeneratedAotPods);
+  app.setAotRegistrar(registerGeneratedArtifacts);
 
   // Watch mode stays alive for the scheduled task; otherwise run once and exit.
   final keepAlive = args.contains('--mode=watch');

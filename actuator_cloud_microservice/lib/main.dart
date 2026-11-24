@@ -1,5 +1,5 @@
 import 'package:jetleaf/jetleaf.dart';
-import '_jetleaf/aot_registry.g.dart';
+import '_jetleaf/main.dart';
 
 @JetleafApplicationStarter()
 class ActuatorCloudApp {
@@ -7,5 +7,5 @@ class ActuatorCloudApp {
 }
 
 void main(List<String> args) async {
-  await JetleafApplication.run(ActuatorCloudApp(), args, null, registerJetleafAot);
+  await JetleafApplication.run(ActuatorCloudApp(), args, aotRegistrar: registerGeneratedArtifacts);
 }

@@ -19,7 +19,7 @@ lib/
       health_indicator_service.dart   # Contract abstraction
       database_health_indicator.dart  # Simulated SQL connectivity probe (pinged on every check)
       memory_pressure_health_indicator.dart  # Process-level RSS limit (default 1.8 GB)
-      health_service.dart             # Aggregates all indicator beans
+      health_service.dart             # Aggregates all indicator pods
       indicator_result.dart           # Result record
 bin/
   run.sh                        # Convenience launcher

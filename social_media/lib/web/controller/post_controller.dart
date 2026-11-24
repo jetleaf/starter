@@ -10,7 +10,7 @@ import '../../exception/social_pulse_exception.dart';
 import '../../service/post_service.dart';
 import '../../service/user_service.dart';
 import '../../util/page.dart';
-import '../../web/dto/bean_validator.dart';
+import '../dto/pod_validator.dart';
 import '../../web/dto/requests.dart';
 import '../../repository/post_repository.dart';
 
@@ -21,7 +21,7 @@ class PostController {
 
   final PostService _posts;
   final UserService _users;
-  final BeanValidator _validator;
+  final PodValidator _validator;
   final PostRepository _postRepository;
 
   /// Create a post as the actor identified by `X-User`.

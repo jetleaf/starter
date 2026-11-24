@@ -4,9 +4,9 @@ This directory contains real-world, runnable starter projects built entirely wit
 
 Unlike integration test suites, these projects are production-style architectural templates that developers and enterprise teams can clone, explore, and use as starting points for their own backend applications.
 
-All projects in this workspace run against the local **Jetleaf** workspace at `../jetleaf` — not pub.dev — so the exact code-in-tree API is used (including breaking changes not yet published). The `pubspec.yaml` files reference Jetleaf packages with relative `path:` dependencies.
+All projects resolve Jetleaf from **pub.dev** using version constraints in their `pubspec.yaml` files (for example `jetleaf: ^2.1.0`). No `dependency_overrides` are committed, so every project builds from a fresh clone.
 
-Each project still builds and tests out of the box; to swap back to pub.dev for a published release, replace the `path:` entries with `^x.y.z` version constraints.
+To develop against unpublished framework changes, add local `path:` overrides temporarily (do not commit them), then re-run `dart pub get`. See [README.md](./README.md#dependency-model) for an example.
 
 ---
 
@@ -111,7 +111,7 @@ All projects in this workspace run on the current built packages:
 * **Real-Life Use Case**: Reference architecture exploring the full depth of Jetleaf's IoC container.
 * **Key Features**:
   * Singleton vs Prototype pod scopes.
-  * Lazy initialization (`@Lazy`) vs eager bean startup.
+  * Lazy initialization (`@Lazy`) vs eager pod startup.
   * Conflict resolution using `@Primary` and `@Qualifier`.
   * Priority execution chains using `@Order`.
   * Lifecycle callbacks: `@PostConstruct` and `@PreDestroy`.
@@ -155,9 +155,9 @@ All projects in this workspace run on the current built packages:
 * `@Scheduled` has no `initialDelay`; cron is 6-field (`sec min hour dom mon dow`).
 * `@ConfigurationProperty` binds **exact** dot-case keys (`maxRequests`, not `max-requests`/kebab-case).
 * `jetson` **strips empty lists/maps/nulls** from JSON output (tested, intentional) — clients must tolerate missing keys; response field names are serialized as `snake_case` while `@RequestBody Map bodies` are read as-sent.
-* AOT registry (`jl build` → `lib/_jetleaf/`) is required for the web server to boot; plain `dart run` without the registrar runs a context with no HTTP server. With `bin/<app>.dart` passing `registerJetleafAot`, plain `dart run` works too.
+* AOT registry (`jl build` → `lib/_jetleaf/`) is required for the web server to boot; plain `dart run` without the registrar runs a context with no HTTP server. With `bin/<app>.dart` passing `registerGeneratedArtifacts`, plain `dart run` works too.
 * No request/session pod scope (`ScopeType` is SINGLETON/PROTOTYPE only); no `jetleaf_security` yet (bearer validation is userland).
-* Plain `dart analyze` ignores generated code only if excluded — all starters exclude `**/_jetleaf*/**` (or `lib/_jetleaf*/**`) via `analysis_options.yaml`. Generated `_proxies/` **must** be included in analysis — they are valid Dart and analyzing them catches generator bugs; SocialPulse is at 0 issues including proxies.
+* Plain `dart analyze` ignores generated code only if excluded — all starters exclude `**/_jetleaf*/**` (or `lib/_jetleaf*/**`) via `analysis_options.yaml`. Generated `_jetleaf/proxies/` **must** be included in analysis — they are valid Dart and analyzing them catches generator bugs; SocialPulse is at 0 issues including proxies.
 * **Starter `pubspec.lock` drift breaks `jl dev` after analyzer migrations.** The starter workspaces (`social_media`, `microservices`, **and 9 other starters** — see `grep -l '"10.2.0"' */pubspec.lock`) pinned `analyzer 10.2.0` transitively before the analyzer-14 migration. The warm VM then compiles `jetleaf_tools` (which requires `analyzer ^14.7.0`) against 10.2.0 and dies with diagnostics like `BlockEnumBody isn't a type` / `No named parameter with the name 'inner'` — the manager reports only `vm exited 254`. Fix: re-run `dart pub get` in each affected starter workspace to re-resolve against current path deps.
 * `jetleaf_tools`' generated entry stub (`jl dev`) used to import a non-existent deep path (`jetleaf_tools/src/runtime/scanner/...`) — every warm VM crashed at startup; it now uses the public `jetleaf_tools` API.
 * AOT build tree-shaking previously pruned **every** proxy class (reachability ran on the pre-proxy file set) — fixed: the post-proxy re-scan feeds reachability. Proxy classes sharing one source file used to clobber each other's generated proxy file (41 emitted → 31 effective, classes like `HealthService` silently lost) — fixed: proxy file names now carry the class name. All AOT writers escape Dart string literals (`$$JLInterfaced$$` identifiers previously broke parsers).

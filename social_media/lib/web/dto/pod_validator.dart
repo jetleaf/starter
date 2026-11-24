@@ -1,6 +1,6 @@
 /// Thin wrapper over the Jetleaf validation engine.
 ///
-/// Centralises bean validation so controllers get a single, consistent
+/// Centralises pod validation so controllers get a single, consistent
 /// `validateOrThrow` entrypoint instead of sprinkling reflection calls.
 library;
 
@@ -10,14 +10,14 @@ import 'package:jetleaf_validation/jetleaf_validation.dart';
 import '../../exception/social_pulse_exception.dart';
 
 @Component()
-class BeanValidator {
-  BeanValidator(this._factory);
+class PodValidator {
+  PodValidator(this._factory);
 
   final ValidationFactory _factory;
 
   /// Throws [ContentRejectedException] with all violation messages when invalid.
-  T validateOrThrow<T>(T bean) {
-    final report = _factory.validate(bean as Object, null);
+  T validateOrThrow<T>(T pod) {
+    final report = _factory.validate(pod as Object, null);
     if (!report.isValid()) {
       final violations = report
           .getViolations()
@@ -26,6 +26,6 @@ class BeanValidator {
         ..sort();
       throw ContentRejectedException(violations.join('; '));
     }
-    return bean;
+    return pod;
   }
 }

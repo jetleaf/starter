@@ -1,6 +1,6 @@
 import 'package:jetleaf/jetleaf.dart';
 
-import '_jetleaf/aot_registry.g.dart';
+import '_jetleaf/main.dart';
 
 @JetleafApplicationStarter()
 class MultienvSaasConfigApp {
@@ -8,5 +8,5 @@ class MultienvSaasConfigApp {
 }
 
 void main(List<String> args) async {
-  await JetleafApplication.run(MultienvSaasConfigApp(), args, null, registerJetleafAot);
+  await JetleafApplication.run(MultienvSaasConfigApp(), args, aotRegistrar: registerGeneratedArtifacts);
 }

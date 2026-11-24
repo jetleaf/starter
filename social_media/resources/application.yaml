@@ -11,7 +11,7 @@ jetleaf:
     mode: "console"
 
 # NOTE: Jetleaf binds @ConfigurationProperty fields by exact (camelCase) key,
-# not relaxed kebab-case, so these keys mirror the field names exactly.
+# not relaxed kebab-case, so these keys follow the field names exactly.
 social:
   feed:
     pageSize: 20

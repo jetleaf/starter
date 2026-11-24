@@ -3,3 +3,4 @@
 lib/_jetleaf/
 build/
 *.exe
+.jetleaf/vm/state.json

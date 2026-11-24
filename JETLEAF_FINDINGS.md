@@ -102,7 +102,7 @@ responses never break. It is *tested*: `packages/jetson/test/string_json_generat
 **Caveats / remaining work**
 - Only members returning `Future`/`FutureOr`/`void` are interceptable — sync members are direct forwards by design (annotations that make no sense synchronously still pass through).
 - Proxies are emitted only for the project's **root package**; library packages shipped as dependencies are not proxied.
-- The generated proxies are lint-suppressed file-level and are expected to stay analyzer-clean; keep `lib/_proxies/**` included in analysis.
+- The generated proxies are lint-suppressed file-level and are expected to stay analyzer-clean; keep `lib/_jetleaf/proxies/**` included in analysis.
 - No unit tests pin the interception path yet (verification is HTTP-level; see SocialPulse README).
 - A separate silent-failure mode exists in `ApplicationEventMethodAdapter` (listener invocations are fire-and-forget, exceptions swallowed) — app-level listeners should try/catch or the framework should log; logged as a footnote in Part B.
 
@@ -170,10 +170,10 @@ responses never break. It is *tested*: `packages/jetson/test/string_json_generat
 
 **Behavior.** `DefaultApplicationContextFactory` selects the context type by reflectively discovering `ConfigurableApplicationContext` subclasses and instantiating them. Without a registrar populating AOT constructor tables (`registerNamedConstructor(...)`), instantiation fails with `ConstructorNotFoundException` for *all* candidates (including `AnnotationConfigApplicationContext` and `ServerWebApplicationContext`), and the factory **silently falls back to `AnnotationConfigApplicationContext()`**. That context has no web bootstrap: no dispatcher, no `SmartLifecycle` chain to call `server.start()`, no port is ever bound; the app prints a banner and exits.
 
-With the AOT registrar passed (`JetleafApplication.run(app, args, null, registerJetleafAot)`), the tables populate, the factory picks `ServerWebApplicationContext` for WEB, and the server binds. `jl dev`/`jl run` accomplish the same via the generated entry wrapper. Without the registrar, nothing about the web tier can ever start in plain Dart.
+With the AOT registrar passed (`JetleafApplication.run(app, args, null, registerGeneratedArtifacts)`), the tables populate, the factory picks `ServerWebApplicationContext` for WEB, and the server binds. `jl dev`/`jl run` accomplish the same via the generated entry wrapper. Without the registrar, nothing about the web tier can ever start in plain Dart.
 
 **Evidence**
-- Source: `libraries/jetleaf_core/lib/src/lang/runtime/provider/_material_library.dart` (`getSubClasses()` uses the runtime cache; instantiation blind) — and `libraries/jetleaf_tools/lib/src/aot/aot_registrar_writer.dart` (the master `_jetleaf/aot_registry.g.dart` emits `registerNamedConstructor(...)`, which is what plain Dart lacks).
+- Source: `libraries/jetleaf_core/lib/src/lang/runtime/provider/_material_library.dart` (`getSubClasses()` uses the runtime cache; instantiation blind) — and `libraries/jetleaf_tools/lib/src/aot/aot_registrar_writer.dart` (the master `_jetleaf/main.dart` emits `registerNamedConstructor(...)`, which is what plain Dart lacks).
 - Live (ecommerce_catalog_api, plain `dart run bin/debug_run.dart`): `Launching ... with application type: WEB` … `Started EcommerceCatalogApp in 8.834 seconds` → immediate graceful shutdown, port never bound.
 - Instrumented instrumentation output (now reverted): `CONTEXTFACTORY: failed AnnotationConfigApplicationContext -> ConstructorNotFoundException` for both candidates; `falling back to AnnotationConfigApplicationContext`.
 - With registrar via `jl run`: `Starting setup of ServerWebApplicationContext application context...`, `Binding HTTP server on localhost:8080`, `Server started in 21/30 ms`.
@@ -181,14 +181,14 @@ With the AOT registrar passed (`JetleafApplication.run(app, args, null, register
 **Impact.** Every "getting started" command a new user tries (`dart run bin/foo.dart`) silently succeeds-and-exits without binding a port; the app prints "Application started" then closes. Looks like success; serves nothing; hours lost. Starters that do bind rely on `jl` indirection to mask this.
 
 **Candidate fixes / options**
-1. **Make the fallback loud** — detect `WEB` application type + see that web context could not be instantiated → throw a fatal with remediation: "This application type requires the Jetleaf AOT registrar; run via `jl run` or add `registerJetleafAot` to your entry point. `dart run` is not a supported bootstrap." (Fail-fast instead of silent no-op.)
+1. **Make the fallback loud** — detect `WEB` application type + see that web context could not be instantiated → throw a fatal with remediation: "This application type requires the Jetleaf AOT registrar; run via `jl run` or add `registerGeneratedArtifacts` to your entry point. `dart run` is not a supported bootstrap." (Fail-fast instead of silent no-op.)
 2. **Always-JIT context** — guarantee `AnnotationConfigApplicationContext` can always be constructed (it actually can be instantiated statically from user code if user constructs it directly; the failure mode is the reflective path) — but it won't bind HTTP either, so this alone is insufficient; must route web-aware type selection statically.
 3. **Ship registrar in entrypoint by default** (like our `bin/social_media.dart` fix) — and verify starter templates all do this (they do for the library's own examples, but `example/` misses it).
 4. **Document hard + CI check** in tooling template that entrypoints import the generated registry.
 
 **Open questions.** If we get http server bind with plain Dart through a static `ServerWebApplicationContext()` ctor in user code, we'd give up reproducible pod instantiation, so it's not technically achievable without significant baggage — the fail-loud route is probably right. Should `jl` warn if a bin/ lacks registrar?
 
-**Workaround in play.** `bin/social_media.dart` and all starter `bin/*.dart` entries updated to pass `registerJetleafAot`, so `dart run` works too (verified for microservices entries through `jl run`; plain `dart run` for those bins was not re-run after the edit — see remaining gaps, Projects.md and SocialPulse README).
+**Workaround in play.** `bin/social_media.dart` and all starter `bin/*.dart` entries updated to pass `registerGeneratedArtifacts`, so `dart run` works too (verified for microservices entries through `jl run`; plain `dart run` for those bins was not re-run after the edit — see remaining gaps, Projects.md and SocialPulse README).
 
 ---
 
@@ -200,14 +200,14 @@ These were real defects in the tree, fixed against the framework source and veri
 |---|---|---|---|
 | B1 | jetleaf_core — pod factory | `AbstractAutowirePodFactory.createInstance` ignored `root.instanceSupplier` when `factoryMethod` was set | Supplier now wins when present |
 | B2 | jetleaf_tools — AOT generator | `@Value` on `@Pod` factory-method parameters emitted `factory.get(Class<int>())` (unresolvable); pods unbuildable | Generator now emits `_resolveConfigValue(...)` placeholder→env→ConversionService→cast; `INSTANCE.valueName`, `primitiveClassLiteral`, `dartStringLiteral`, `_valueExpression`, `_buildParameterLookup`, `_castTarget` helpers added in `aot_pod_registry_writer.dart` |
-| B3 | jetleaf_tools — master registry emitter | `aot_registry.g.dart` never emitted `_resolveConfigValue` / `_optional` helpers | `_valueResolver` + `_optionalHelper` constants in `aot_registrar_writer.dart`, inserted after the generated `part` directives (must come after parts, before `bool _aotRuntimeInitialized...`) |
+| B3 | jetleaf_tools — master registry emitter | `registry.g.dart` never emitted `_resolveConfigValue` / `_optional` helpers | `_valueResolver` + `_optionalHelper` constants in `aot_registrar_writer.dart`, inserted after the generated `part` directives (must come after parts, before `bool _runtimeInitialized...`) |
 | B4 | jetleaf_tools — AOT generator | Generator emitted unconditional `factory.get(...)` for **nullable** injectable parameters — web server could never boot (`NoSuchPodDefinitionException` → 503) | Wrap optional lookups in `_optional(factory, () async => ...)` for parameters that are nullable or non-required |
 | B5 | jetson / web boot pipeline | Chain B2+B4 kept `IoWebServerSecurityContextFactory?` unresolvable → web server could never bind | All `_jetleaf/` trees in monorepo regenerated with rebuilt `jetleaf_tools` |
 | B6 | jetleaf_web — method argument adaptation | `@RequestParam int/bool/...` resolved as `String` and never converted → `String is not a subtype of int` crashes | `DefaultMethodArgumentResolverManager.resolveArgs` now converts via `ApplicationContext → PodFactory → ConversionService`; failures → 400 `InvalidArgumentException` |
 | B7 | SocialPulse — notification listener | `onPostLiked` message used `event.post.authorHandle` (author) instead of the liker's handle | Now looks up liker via `UserRepository` |
 | B8 | jetleaf_tools — AOT proxy generator | **Proxies were silently pruned from the cache and the AOT registry** — tree-shaking ran `_isReachableComponent` against the pre-proxy file set, so every `$$JLInterfaced$$` class was unreachable and dropped (1799 components vs 1840 with proxies) | `build_command.dart` re-scans after proxy emission and feeds the post-proxy `files` set into reachability analysis |
 | B9 | jetleaf_tools — AOT proxy generator | **Proxy files were named after the source file only**, so multiple stereotype classes in one file (e.g. `social_pulse_listeners.dart` with 5 `@Service` classes) clobbered each other — 41 classes "written", only 31 proxies on disk, and AOT/unreachable cache silently missing classes like `HealthService`, `AuditEventListener`, `InMemoryNotificationRepository` | Proxy file now suffixed with snake_case class name (`social_pulse_listeners_audit_event_listener.proxy.dart`) |
-| B10 | jetleaf_tools — all AOT writers | **`$$`-containing identifiers emitted raw into single-quoted literals** — e.g. `'$$JLInterfaced$$ExternalPushClient'` in `registry_types.g.dart` is unparseable (`$$` starts an interpolation); the application could never reach `registerJetleafAot`. Any `$`, `'` or `\` in class/pod/member names broke the generated source | `AotSubRegistrarWriter.escapeDartStringLiteral` added; applied at every literal emission site (type/constructor/method/field/pod registries) |
+| B10 | jetleaf_tools — all AOT writers | **`$$`-containing identifiers emitted raw into single-quoted literals** — e.g. `'$$JLInterfaced$$ExternalPushClient'` in `registry_types.g.dart` is unparseable (`$$` starts an interpolation); the application could never reach `registerGeneratedArtifacts`. Any `$`, `'` or `\` in class/pod/member names broke the generated source | `AotSubRegistrarWriter.escapeDartStringLiteral` added; applied at every literal emission site (type/constructor/method/field/pod registries) |
 | B11 | jetleaf_tools — `jl dev` entry writer | Generated warm-VM entry imported `package:jetleaf_tools/src/runtime/scanner/runtime_scanner_configuration.dart`, **a path that does not exist** — every warm VM died at startup (`Method not found: 'RuntimeScannerConfiguration'`) | Entry stub now uses the public `jetleaf_tools.dart` API surface only (`jl.RuntimeScannerConfiguration`, `jl.RuntimeBuildMode`) |
 | B12 | jetson-adjacent logging — `LogFactory` | **`_isWarnEnabled` / `_isFatalEnabled` / `_isTraceEnabled` defaulted to `false`** — every `_logger.warn(...)` in the framework was silently dropped (this masked exhausted-retry visibility during the SocialPulse verification loop; the `@Recover` path looked "dead" until WARN was observed to be suppressed by default) | WARN default flipped to `true` (consistent with DEBUG/INFO/ERROR); documented in the code comment; FATAL/TRACE left as opt-in |
 | B13 | jetleaf_core — AOT registrar template | Generated `_valueResolver` threw raw `StateError` on unresolvable `@Value` placeholder | Throws `IllegalStateException` (framework exception policy); generated file imports `design.dart show IllegalStateException` |
@@ -243,3 +243,91 @@ All package `.jetleaf/` registries regenerated after the fixes (jetleaf_core, al
 | A6 | bootstrap correctness vs DX | jetleaf_core/tools | Low (fail-loud is safest) |
 
 **Next step:** pick an A-item, decide policy (change / document / fail-loud), then open a focused task (branch, change, verify).
+
+---
+
+# Part D — Registry consolidation & `jl proxy` (this cycle)
+
+## D1. `AotRuntimeExecutor` / `_declaration.dart` / `annotation.dart` each held scattered static registries
+
+- **Status:** FIXED (2026-11-16)
+- **Severity:** High (framework architecture; generated code hard to reason about)
+- **Type:** design/maintainability defect
+
+**Behavior.** Registration surfaces for the AOT runtime were scattered across three files: `aot_runtime_executor.dart` (static `_namedConstructors`, `_typeConstructors`, `_methodInvokers`, `_fieldGetters`, `_fieldSetters`), `lang/declaration/_declaration.dart` (static `_registeredTypes`/`resolveType` plus enum-value resolver), and `annotation/annotation.dart` (static `_instanceFactories`). Every generated sub-registry touched a *different* class (`AotRuntimeExecutor.registerNamedConstructor` in constructors/methods/fields/types, `StandardDeclaration.registerEnumValueResolver` in enum handling, `MaterializedLibrary.registerAnnotationInstanceResolver` in annotations) and each writer hoped it would stay in sync.
+
+**Fix.** All types, enum-value resolvers, constructors (named + typed), method invokers, field getters/setters, annotation instance factories and annotation instance resolvers now live on `jetleaf_core/src/lang/meta/materialized_library.dart`. `AotRuntimeExecutor` keeps only the dispatch logic (`newInstance`, `invokeMethod`, `getValue`, `setValue`, `constructByName` plumbing goes through `MaterializedLibrary.lookup*`); `StandardDeclaration` no longer resolves types itself; `Annotation` no longer owns the factory list. Registry order is fully centralized and owned by generated code in `_jetleaf/registry_*.g.dart` — users never touch these APIs, and writers only need to remember one class.
+
+**Verified.** Ultimate sample suite: 13/13 pass. `jetleaf_tools`: 326/326 pass. Microservices (`gateway`, `user_service`, `order_service`, `notification_service`) boot and the cluster reports `UP`. SocialPulse boots (`8080`) and reports `UP` (with 41 `_proxies` warm). `dart analyze` clean across core, tools, web, and ultimate.
+
+## D2. `jl proxy` — standalone proxy generation command
+
+- **Status:** FIXED (2026-11-16); shipped as `jl proxy`
+- **Severity:** Medium (DX / mixed-use toolchain)
+- **Type:** tooling gap
+
+**Behavior.** Proxy emission was only available as a side effect of `jl build`, which also rewrites caches, the reachability report, tree-shaking, pod registries, and the full AOT manifest. Generating only the proxies (to iterate on a new stereotype, to commit proxies, or to check proxy output in isolation) required a full `jl build`.
+
+**Fix.** New `jl proxy [--root <dir>] [--verbose] [--help]` command in `jetleaf_tools` (`cli/proxy_command.dart` + `cache/indexer/proxy_emitter.dart`). Behavior:
+- Mirrors `jl build`'s scan → analyze → emit flow (`AotProxyWriter().emitProjectProxies`) without cache/registry/tree-shaking work.
+- Workspace roots (pub `workspace:` in `pubspec.yaml`) fan out per member, same as `jl build`. Each member gets `Proxy emission: N proxies written`.
+- Not wired into `jl dev` (it exists to iterate quickly outside the build).
+- Verified on `sample_projects/ultimate` (10 proxies emitted; identical md5 set as `jl build`), on the microservices workspace (0/5/4/7/4 proxies for `common`/`gateway`/`user_service`/`order_service`/`notification_service`), and SocialPulse (41 proxies).
+
+**Usage.**
+
+```text
+jl proxy                 # current project
+jl proxy --root .        # explicit root
+jl proxy --verbose       # scan + generation logs
+jl proxy --help
+```
+
+---
+
+# Part E — Generated artifact relocation (this cycle)
+
+## E1. `_jetleaf/` layout restructured to `main`/`test`/`proxies`
+
+- **Status:** FIXED (2026-11-16)
+- **Severity:** Medium (DX / build-tree ergonomics)
+- **Type:** tooling layout
+
+**Behavior.** Registry artifacts were emitted at `lib/_jetleaf/` (production) and `lib/_jetleaf_test/` (test), and proxies at `lib/_proxies/`. Three separate locations under `lib/`, inconsistent between main and test, and the test tree could not share the proxy directory with the production one.
+
+**Fix.** Unified under `lib/_jetleaf/`:
+
+```
+lib/_jetleaf/
+  main.dart          // facade: `library; export 'main/registry.g.dart';`
+  test.dart          // facade: `library; export 'test/registry.g.dart';`
+  main/
+    registry.g.dart          // master production registry
+    registry_annotations.g.dart
+    <package>/registry_*.g.dart
+  test/
+    registry.g.dart          // master test registry (same shape)
+    registry_annotations.g.dart
+    <package>/registry_*.g.dart
+  proxies/                 // interceptable proxies (moved from lib/_proxies/)
+```
+
+Consumers now import `package:my_app/_jetleaf/main.dart` (or `..._jetleaf/test.dart` for tests), instead of reaching into `_jetleaf/main/registry.g.dart` directly.
+
+**Cleanup.** All tracked `lib/_jetleaf/`, `lib/_jetleaf_test/`, `lib/_proxies/` (and `.jetleaf/` caches) were deleted across every "dart" project in the repo (monorepo + starters + sample projects) and rebuilt with `jl build` / `jl build --test`. All facades are regenerated by the build, gitignored.
+
+**Facades are produced by `jl build`**; no project references the generated files directly, so the whole tree is reproducible from clean.
+
+**Verified.** `jl build` + `jl build --test` on ultimate, example, builder/server, cli_app, resource_app (13/13 + 1 + 3 pass respectively); pub-gl son; social_media boot and `/actuator/health` = UP; microservices fleet boot and cluster health = UP; `jl proxy` emits to `lib/_jetleaf/proxies/` and is byte-identical to `jl build` proxies; `jl help`, `jl proxy --help` and `jl proxy` work at workspace member and aggregated roots.
+
+## E2. AOT registry entry points renamed
+
+- **Status:** FIXED (2026-11-16)
+- **Severity:** Medium (API surface / public contract)
+- **Type:** rename
+
+**Behavior.** `registerJetleafAot` was the production registrar and `registerJetleafPod`/`registerGeneratedAotPods` were compatibility aliases left at call sites across every starter.
+
+**Fix.** Renamed to `registerGeneratedArtifacts`; tests use `registerTestGeneratedArtifacts`. Aliases are removed. The flag `_aotRuntimeInitialized` is now `_runtimeInitialized`.
+
+Migrated: starters (every `lib/main.dart` and `bin/*.dart` that passed the registrar), samples (cli_app, resource_app, ultimate), tool tests (`test/helpers/aot_test_setup.dart`, `runtime_hint`/`declaration` suites), core tests (`test/lang/meta/test_data.dart`), `default_context_factory.dart`, `jetleaf_application.dart` (runtime error messages). Aliases are gone from source; `.jetleaf` regenerated from clean to confirm no stale reference.

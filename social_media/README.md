@@ -24,7 +24,7 @@ genuinely usable app: seeded local workspace, JSON API, SSR portal.
 | IoC/DI | `@Service/@Repository/@Component/@Primary/@Qualifier/@Lazy/@Scope('prototype')`, `@PostConstruct`, `@Value`, `@ConfigurationProperty` (exact-key binding), factory-method `@Pod`, custom conditionals, custom stereotype (`CommunityModerator`), prototype `NotificationDraft` |
 | Events | `PostLikedEvent/CommentAddedEvent/…` with `@EventListener` pods at `@Order(10..90)` (notifications → moderation → analytics → push → audit) |
 | Scheduling | `@Scheduled(fixedRate)` + `@Cron` jobs (trending recalc, hourly sweep, nightly digest) |
-| Validation | `@NotBlank/@Size/@Pattern/@Min/@Max/@Positive/@Email` on DTOs; manual bean path via `BeanValidator` wrapper (framework has no web-side validation) |
+| Validation | `@NotBlank/@Size/@Pattern/@Min/@Max/@Positive/@Email` on DTOs; manual pod path via `PodValidator` wrapper (framework has no web-side validation) |
 | SSR | `jtl`-rendered `/portal` + `/portal/{handle}` with layout composition |
 | Retry | **programmatic** `RetryExecutor` (`ExternalPushClient` — annotation-level `@Retryable` is inert in this build, see "Honest notes") |
 | Actuator | userland `/actuator/health|liveness|readiness|metrics|info` + `FeedStoreHealthIndicator` pattern |
@@ -40,7 +40,7 @@ genuinely usable app: seeded local workspace, JSON API, SSR portal.
 dart run ../../jetleaf/libraries/jetleaf_tools/bin/jl.dart dev          # warms + parks lib/main.dart
 dart run ../../jetleaf/libraries/jetleaf_tools/bin/jl.dart run lib/main.dart -- --jetleaf.profiles.active=dev
 
-# or plain dart run (works, slow scan; entry passes registerJetleafAot)
+# or plain dart run (works, slow scan; entry passes registerGeneratedArtifacts)
 dart run bin/social_media.dart --jetleaf.profiles.active=dev
 ```
 

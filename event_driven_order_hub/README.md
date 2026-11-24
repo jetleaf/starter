@@ -5,7 +5,7 @@ an in-memory checkout pipeline and pluggable event listeners.
 
 - `OrderService` publishes domain events to the application context:
   `OrderPlacedEvent` → `OrderProcessedEvent` → `OrderNotifiedEvent`.
-- Two independent `@EventListener` beans react to those events:
+- Two independent `@EventListener` pods react to those events:
   - **AuditLogListener** — appends entries to an in-memory audit trail.
   - **NotificationListener** — prints simulated customer emails.
 - The REST API exposes the pipeline, the audit trail and the notification log.

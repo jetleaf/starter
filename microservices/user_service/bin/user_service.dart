@@ -2,7 +2,7 @@ library;
 
 import 'package:jetleaf/jetleaf.dart';
 import 'package:user_service/user_service.dart';
-import 'package:user_service/_jetleaf/aot_registry.g.dart';
+import 'package:user_service/_jetleaf/main.dart';
 
 /// Entry for the user service. Runs standalone on port 8081 by default.
 ///
@@ -12,7 +12,7 @@ import 'package:user_service/_jetleaf/aot_registry.g.dart';
 void main(List<String> args) async {
   final argv = args.isEmpty ? ['--server.port=8081'] : args;
   try {
-    await JetleafApplication.run(UserServiceApp(), argv, null, registerJetleafAot);
+    await JetleafApplication.run(UserServiceApp(), argv, aotRegistrar: registerGeneratedArtifacts);
   } catch (e, st) {
     print('user-service failed: $e\n$st');
     rethrow;

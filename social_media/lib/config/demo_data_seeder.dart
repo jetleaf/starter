@@ -1,6 +1,6 @@
 /// Dev-only demo data seeder — never active in production.
 ///
-/// Wired with `@Profile(['dev'])` so the bean vanishes from the production
+/// Wired with `@Profile(['dev'])` so the pod vanishes from the production
 /// context entirely; production deploys must pass `--spring.profiles.active=prod`
 /// (or the `jetleaf.profiles.active` property) and will *not* get synthetic users.
 library;

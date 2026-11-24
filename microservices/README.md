@@ -65,7 +65,7 @@ cd ../notification_service && dart run ../../../jetleaf/libraries/jetleaf_tools/
 cd ../gateway            && dart run ../../../jetleaf/libraries/jetleaf_tools/bin/jl.dart run bin/gateway.dart
 ```
 
-**Note**: there is no `jl dev` manager rooted at the workspace root — each member app must be discovered from its own project directory. Plain `dart run bin/<service>.dart` does work (the entry passes `registerJetleafAot`) but takes minutes to scan on the JIT path; use `jl dev` + `jl run` for normal development.
+**Note**: there is no `jl dev` manager rooted at the workspace root — each member app must be discovered from its own project directory. Plain `dart run bin/<service>.dart` does work (the entry passes `registerGeneratedArtifacts`) but takes minutes to scan on the JIT path; use `jl dev` + `jl run` for normal development.
 
 ### Exercise the API
 

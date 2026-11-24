@@ -9,7 +9,7 @@ import '../etl/report_writer.dart';
 /// Scheduled task that re-imports any CSV files dropped into the inbox
 /// directory. Active only when the app stays alive (`--mode=watch`).
 ///
-/// Mirrors how an ETL job would run on a nightly cron: new files appear in
+/// Follows how an ETL job would run on a nightly cron: new files appear in
 /// the inbox, they get processed, and a summary report is emitted.
 @Service()
 class NightlyImportTask {

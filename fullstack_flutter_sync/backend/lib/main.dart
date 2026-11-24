@@ -1,6 +1,6 @@
 import 'package:jetleaf/jetleaf.dart';
 
-import '_jetleaf/aot_registry.g.dart';
+import '_jetleaf/main.dart';
 
 @JetleafApplicationStarter()
 class FullstackSyncBackendApp {
@@ -8,5 +8,5 @@ class FullstackSyncBackendApp {
 }
 
 void main(List<String> args) async {
-  await JetleafApplication.run(FullstackSyncBackendApp(), args, null, registerJetleafAot);
+  await JetleafApplication.run(FullstackSyncBackendApp(), args, aotRegistrar: registerGeneratedArtifacts);
 }

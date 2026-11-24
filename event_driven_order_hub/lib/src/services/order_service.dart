@@ -70,7 +70,7 @@ class OrderService {
     _orders.add(order);
     _logger.info('Order placed: ${order['id']}');
 
-    // Fan out to any registered @EventListener beans.
+    // Fan out to any registered @EventListener pods.
     await _applicationContext.publishEvent(OrderPlacedEvent(
       orderId: order['id']! as String,
       customerId: customerId,

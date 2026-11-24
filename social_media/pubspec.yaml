@@ -20,27 +20,3 @@ dependencies:
 dev_dependencies:
   test: ^1.31.1
   lints: ^6.1.0
-
-dependency_overrides:
-  jetleaf:
-    path: ../../jetleaf
-  jetleaf_core:
-    path: ../../jetleaf/libraries/jetleaf_core
-  jetleaf_tools:
-    path: ../../jetleaf/libraries/jetleaf_tools
-  jetleaf_web:
-    path: ../../jetleaf/packages/jetleaf_web
-  jetleaf_validation:
-    path: ../../jetleaf/packages/jetleaf_validation
-  jetleaf_retry:
-    path: ../../jetleaf/packages/jetleaf_retry
-  jetleaf_scheduling:
-    path: ../../jetleaf/packages/jetleaf_scheduling
-  jetleaf_actuator:
-    path: ../../jetleaf/packages/jetleaf_actuator
-  jetleaf_resource:
-    path: ../../jetleaf/packages/jetleaf_resource
-  jetson:
-    path: ../../jetleaf/packages/jetson
-  jtl:
-    path: ../../jetleaf/packages/jtl

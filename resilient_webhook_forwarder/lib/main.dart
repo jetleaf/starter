@@ -1,6 +1,6 @@
 import 'package:jetleaf/jetleaf.dart';
 
-import '_jetleaf/aot_registry.g.dart';
+import '_jetleaf/main.dart';
 
 @JetleafApplicationStarter()
 class ResilientWebhookForwarderApp {
@@ -8,5 +8,5 @@ class ResilientWebhookForwarderApp {
 }
 
 void main(List<String> args) async {
-  await JetleafApplication.run(ResilientWebhookForwarderApp(), args, null, registerJetleafAot);
+  await JetleafApplication.run(ResilientWebhookForwarderApp(), args, aotRegistrar: registerGeneratedArtifacts);
 }

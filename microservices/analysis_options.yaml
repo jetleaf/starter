@@ -3,7 +3,7 @@ include: package:lints/recommended.yaml
 analyzer:
   exclude:
     - "**/_jetleaf/**"
-    - "**/_jetleaf_test/**"
+    - "**/_jetleaf/test/**"
     - "**/.jetleaf/**"
   language:
     strict-casts: true

@@ -2,7 +2,7 @@ library;
 
 import 'package:jetleaf/jetleaf.dart';
 import 'package:gateway/gateway.dart';
-import 'package:gateway/_jetleaf/aot_registry.g.dart';
+import 'package:gateway/_jetleaf/main.dart';
 
 /// Entry for the API gateway. Runs on port 8080.
 ///
@@ -12,7 +12,7 @@ import 'package:gateway/_jetleaf/aot_registry.g.dart';
 void main(List<String> args) async {
   final argv = args.isEmpty ? ['--server.port=8080'] : args;
   try {
-    await JetleafApplication.run(GatewayApp(), argv, null, registerJetleafAot);
+    await JetleafApplication.run(GatewayApp(), argv, aotRegistrar: registerGeneratedArtifacts);
   } catch (e, st) {
     print('gateway failed: $e\n$st');
     rethrow;
